@@ -8,6 +8,11 @@ nfsremotedir="/home/backupxen/vms"
 # mount remove nfs server
 mount $nfsserver:$nfsremotedir $localdir
 
+# Pool dump Backup
+xe pool-dump-database file-name=$localdir/backup-dump-database
+# Backup host
+xe host-backup host=host file-name=$localdir/host-backup
+
 # Geting VM informations
 uuids=$(xe vm-list is-control-domain=false is-a-snapshot=false power-state=running | grep "uuid" | awk '{ print $'5'}');
 labels=$(xe vm-list is-control-domain=false is-a-snapshot=false power-state=running | grep "name-label" | awk '{ print $'4' $'5' $'6' $'7' $'8' $'9' $'10'}');
@@ -25,7 +30,7 @@ for i in `seq 1 $qvms`; do
   xe template-param-set is-a-template=false ha-always-run=false uuid=$snuuid
 
   # export template as a backup to remote server
-  xe vm-export vm=$snuuid filename=$dir$label-backup.xva
+  xe vm-export vm=$snuuid filename=$localdir$label-backup.xva
 
   #remove a template
   xe vm-uninstall uuid=$snuuid force=true
