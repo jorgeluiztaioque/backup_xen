@@ -35,6 +35,10 @@ for i in `seq 1 $qvms`; do
   #remove a template
   xe vm-uninstall uuid=$snuuid force=true
 
+  # packing vm
+  tar czvf $localdir$label-backup.tar.gz $localdir$label-backup.xva
+  rm -r $localdir$label-backup.xva
+
   sleep 10
 
 done
